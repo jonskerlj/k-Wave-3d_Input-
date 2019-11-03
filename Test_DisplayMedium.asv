@@ -1,0 +1,64 @@
+clear all
+Nx = 128;
+Ny = 128;
+Nz = 64;
+
+
+[OUTPUTgrid] = VOXELISE(32,64,64,'Lens.stl','xyz');
+OUTPUTgrid(31:64,:,:) = 0;
+OUTPUTgrid(:,65:128,:) = 0;
+OUTPUTgrid(:,:,65:128) = 0;
+
+Test = cast(OUTPUTgrid, 'uint8');
+
+medium.sound_speed = 1000 * ones(Nx, Ny, Nz);	% [m/s]
+
+
+for X = 1:length(Test(:,1,1))
+    for Y = 1:length(Test(1,:,1))
+        for Z = 1:length(Test(1,1,:))
+            if OUTPUTgrid(X,Y,Z) == 1
+                medium.sound_speed(X,Y,Z) = 2000;
+            end
+        end
+    end
+end
+% surf(medium.sound_speed(1,:,:))
+% arr1 = squeeze(Test(:,:,1));
+% arr2 = squeeze(Test(:,:,2));
+% arr3 = squeeze(Test(:,:,3));
+% arr4 = squeeze(Test(:,:,4));
+% arr5 = squeeze(Test(:,:,5));
+% volume = cat (3, arr1, arr2, arr3, arr4, arr5)
+% 
+% for z = 1:20
+%     arr = squeeze(Test(:,:,z));
+%     image(arr .* 255);
+% end
+% view(3)
+
+% figure;
+% count = 1
+% for n = 1:5:50
+%     subplot(1,10,count);
+%     imagesc(squeeze((medium.sound_speed(n,:,:))));
+%     colormap(gray(256));
+%     xlabel('Z-direction');
+%     ylabel('Y-direction');
+%     axis equal tight
+%     count = count + 1;
+% end
+% figure;
+% count = 1
+% for n = 1:5:50
+%     subplot(1,10,count);
+%     imagesc(squeeze((medium.sound_speed(:,n,:))));
+%     colormap(gray(256));
+%     xlabel('Z-direction');
+%     ylabel('X-direction');
+%     axis equal tight
+%     count = count + 1;
+% end
+OUT
+
+voxelPlot(OUTPUTgrid)
